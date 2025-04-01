@@ -6,6 +6,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
 
 import java.io.IOException;
 import java.time.Duration;
@@ -15,8 +19,8 @@ import java.time.Duration;
 public class TestFunnel {
     static WebDriver driver;
 
-    @BeforeAll
-    public static void setUp() throws IOException {
+    @BeforeTest
+    public void setUp() throws IOException {
         System.setProperty("webdriver.chrome.driver", "C:\\DRIVERS\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
@@ -34,37 +38,32 @@ public class TestFunnel {
         }
     }
 
-    @Test
-    @Order(1)
+    @Test(priority = 1)
     public void cookieActionTest() {
         CookieAction cookie = new CookieAction(driver);
         cookie.cookie();
     }
 
-    @Test
-    @Order(2)
+    @Test( dependsOnMethods = {"cookieActionTest"},priority = 2)
     public void fYCActionTest() {
         FindYourCruiseAction fyc = new FindYourCruiseAction(driver);
         fyc.searchCruise();
     }
 
-    @Test
-    @Order(3)
+    @Test(priority = 3)
     public void cruiseCardActionTest() {
         CruiseCardAction card = new CruiseCardAction(driver);
         card.openCardAction();
     }
 
-    @Test
-    @Order(4)
+    @Test(priority = 4)
     public void offerCardActionTest() {
         OfferCardAction offer = new OfferCardAction(driver);
         offer.selezionaOffer();
     }
 
 
-    @Test
-    @Order(5)
+    @Test(priority = 5)
     public void testSelectCabin() {
         TypeCabinAction cabin = new TypeCabinAction(driver);
         PositionCabinAction pageCabin = new PositionCabinAction(driver);
