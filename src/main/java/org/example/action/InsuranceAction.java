@@ -15,6 +15,7 @@ public class InsuranceAction {
     WebDriver driver;
     JavascriptExecutor js;
     WebDriverWait wait;
+
     public InsuranceAction(WebDriver driver){
         this.driver=driver;
         this.page= new InsurancePage(driver);
@@ -23,9 +24,8 @@ public class InsuranceAction {
     }
 
     public void selectIncurace(){
-        try{
         wait.until(invisibilityOfElementLocated(Selector.caricamento));
-
+        try{
             visibilityOf(page.getInsurance()).apply(driver).click();
             elementToBeClickable(page.nextPage()).apply(driver).click();
         }catch(Exception e){

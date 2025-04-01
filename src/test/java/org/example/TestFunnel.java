@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -21,7 +22,7 @@ public class TestFunnel {
 
     @BeforeTest
     public void setUp() throws IOException {
-        System.setProperty("webdriver.chrome.driver", "C:\\DRIVERS\\chromedriver.exe");
+       // System.setProperty("webdriver.chrome.driver", "C:\\DRIVERS\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
         driver = new ChromeDriver(options);
@@ -108,7 +109,13 @@ public class TestFunnel {
 
     }
 
-   /* @AfterAll
+    @Test(priority = 6)
+    public void checkOutPay()throws InterruptedException{
+        CheckOutAction pageCheckOut = new CheckOutAction(driver);
+        pageCheckOut.payCruise();
+    }
+
+    /*@AfterTest
     public static void quit()
     {
         driver.quit();
