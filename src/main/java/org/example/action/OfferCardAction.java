@@ -30,8 +30,8 @@ public class OfferCardAction {
        }
 
        public void selezionaOffer(){
+           wait.until(invisibilityOfElementLocated(Selector.caricamento));
            try{
-               wait.until(invisibilityOfElementLocated(Selector.caricamento));
                List<WebElement> offer = page.getOffer();
                if(!offer.isEmpty() && offer.size()>1){
                    //offer.get(rand.nextInt(offer.size()));
