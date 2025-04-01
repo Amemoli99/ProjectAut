@@ -11,8 +11,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
-import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class OfferCardAction {
        private OfferCardPage page;
@@ -30,6 +29,7 @@ public class OfferCardAction {
        }
 
        public void selezionaOffer(){
+           wait.until(visibilityOfElementLocated(Selector.caricamento));
            wait.until(invisibilityOfElementLocated(Selector.caricamento));
            try{
                List<WebElement> offer = page.getOffer();
