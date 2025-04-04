@@ -32,16 +32,6 @@ public class FooterAction{
         this.wait= new WebDriverWait(driver , Duration.ofMillis(2000));
     }
 
-   /* public void vaiAvanti(){
-        try{
-               wait.until(visibilityOfElementLocated(Selector.caricamento));
-               wait.until(invisibilityOfElementLocated(Selector.caricamento));
-               goAvanti();
-           }catch(NoSuchElementException ex){
-                 goAvanti();
-        }
-    }*/
-
     public void vaiAvanti() {
 
         List<WebElement> getAvanti;

@@ -4,6 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 public class FindYourCruisePage {
     private WebDriver driver;
@@ -28,12 +31,12 @@ public class FindYourCruisePage {
         return driver.findElement(By.cssSelector("div[automation-id='search-departures']"));
     }
 
-    public WebElement getSpecificDate() {
-        return  driver.findElement(By.cssSelector(".cell.month[automation-id='datepicker-month-3-2026']"));
+    public List<WebElement> getSpecificDate() {
+        return  driver.findElements(By.cssSelector("[automation-id^=datepicker-1]")).stream().filter(x->x.isEnabled()).collect(Collectors.toList());
     }
 
     public WebElement getDepartureOption() {
-        return driver.findElement(By.cssSelector("[automation-id^=checklist-item-]"));
+        return driver.findElement(By.cssSelector("[automation-id^=checklist-item]"));
     }
 
     public WebElement getSearchButton() {

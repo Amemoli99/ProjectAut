@@ -13,5 +13,18 @@ public class CheckOutPage {
         this.driver=driver;
     }
 
+     public WebElement getCardNumber(){
+        return driver.findElement(By.cssSelector("[id=cardNumber]"));
+     }
+     public WebElement getExpireDate(){
+        return driver.findElement(By.cssSelector("#expiry"));
+     }
 
+     public WebElement getCvv(){
+        return driver.findElement(By.cssSelector("#cvv"));
+     }
+
+     public WebElement btnPay(){
+        return driver.findElement(By.cssSelector("#payLabel"));
+     }
 }
