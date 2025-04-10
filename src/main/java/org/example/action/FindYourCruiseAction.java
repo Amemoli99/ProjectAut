@@ -2,49 +2,71 @@ package org.example.action;
 
 
 import org.example.Selector;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.example.page.FindYourCruisePage;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class FindYourCruiseAction {
     private FindYourCruisePage page;
     private WebDriver driver;
-    WebDriverWait wait;
+    private WebDriverWait wait;
+    Random rand = new Random();
+
     public FindYourCruiseAction(WebDriver driver) {
         this.page = new FindYourCruisePage(driver);
         this.driver= driver;
-        this.wait= new WebDriverWait(driver, Duration.ofMillis(5000));
+        this.wait= new WebDriverWait(driver, Duration.ofSeconds(500));
     }
 
     public void searchCruise() {
         try {
-            invisibilityOfElementLocated(Selector.caricamento);
+            wait.until(invisibilityOfElementLocated(Selector.caricamento));
             page.getDestinationElement().click();
+            wait.until(visibilityOf(page.getFirstCheckbox()));
             wait.until(elementToBeClickable(page.getFirstCheckbox())).click();
 
-            wait.until(elementToBeClickable(page.getDatePicker())).click();
-            Random rand = new Random();
-            List<WebElement> monthEnebled = page.getSpecificDate();
-            wait.until(elementToBeClickable(monthEnebled.get(rand.nextInt(page.getSpecificDate().size())))).click();
-            page.getDepartureDropdown().click();
+            selectDate();
+            selectDeparture();
 
-            try {
-                page.getDepartureOption().click();
-                page.getSearchButton().click();
+            wait.until(elementToBeClickable(page.getSearchButton())).click();
                 visibilityOfElementLocated(Selector.caricamento);
                 invisibilityOfElementLocated(Selector.caricamento);
-            } catch (NullPointerException e) {
-                System.out.println("Elemento non trovato: " + e.getMessage());
-            }
+
         } catch (Exception e) {
             System.out.println("Non è stato possibile completare la ricerca" + e.getMessage());
+        }
+    }
+
+    private void selectDate() {
+        wait.until(elementToBeClickable(page.getDatePicker()));
+        page.getDatePicker().click();
+        wait.until(visibilityOf(driver.findElement(By.cssSelector(".vdp-datepicker__calendar--row"))));
+        List<WebElement> monthEnebled = page.getSpecificDate().stream().filter(WebElement::isEnabled).collect(Collectors.toList());
+        if(!monthEnebled.isEmpty()) {
+            var indexMonth = monthEnebled.get(rand.nextInt(monthEnebled.size()));
+            wait.until(elementToBeClickable(indexMonth));
+            indexMonth.click();
+        }
+    }
+
+    private void selectDeparture() throws InterruptedException {
+        Thread.sleep(1000);
+        elementToBeClickable(page.getDepartureDropdown()).apply(driver).click();
+        wait.until(visibilityOf(driver.findElement(By.cssSelector(".dropdown__container"))));
+        List<WebElement>departureEnabled = page.getDepartureOption().stream().filter(x->x.isEnabled()).collect(Collectors.toList());
+        if(!departureEnabled.isEmpty()){
+            var indexDeparture = departureEnabled.get(rand.nextInt(departureEnabled.size()));
+            wait.until(elementToBeClickable(indexDeparture)).click();
         }
     }
 }

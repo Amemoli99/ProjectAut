@@ -22,14 +22,13 @@ public class TestFunnel {
 
     @BeforeTest
     public void setUp() throws IOException {
-       // System.setProperty("webdriver.chrome.driver", "C:\\DRIVERS\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
+        //options.addArguments("--headless");
         driver = new ChromeDriver(options);
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(500));
         driver.manage().window().maximize();
         driver.get("https://qacm-it.msccruises.com/");
-        //Runtime.getRuntime().exec("C:\\Users\\anton\\Desktop\\scriptCertificato.exe");
 
         try{
             Thread.sleep(5000);

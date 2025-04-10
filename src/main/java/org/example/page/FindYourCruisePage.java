@@ -24,7 +24,7 @@ public class FindYourCruisePage {
     }
 
     public WebElement getDatePicker() {
-        return driver.findElement(By.cssSelector("div[automation-id='search-dates']"));
+        return driver.findElement(By.cssSelector("[automation-id=search-dates]"));
     }
 
     public WebElement getDepartureDropdown() {
@@ -32,11 +32,11 @@ public class FindYourCruisePage {
     }
 
     public List<WebElement> getSpecificDate() {
-        return  driver.findElements(By.cssSelector("[automation-id^=datepicker-1]")).stream().filter(x->x.isEnabled()).collect(Collectors.toList());
+        return  driver.findElements(By.cssSelector("span[class='cell month']"));
     }
 
-    public WebElement getDepartureOption() {
-        return driver.findElement(By.cssSelector("[automation-id^=checklist-item]"));
+    public List<WebElement> getDepartureOption() {
+        return driver.findElements(By.cssSelector("div[automation-id^=checklist-item]"));
     }
 
     public WebElement getSearchButton() {

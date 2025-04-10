@@ -2,40 +2,66 @@ package org.example.api;
 
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 public class GetBooking {
 
+    public static void main(String[] args) throws Exception {
+        getBookingApi();
+    }
 
-   public String getBookingApi(String bookingNum , String firstName , String lastName , String dateOfBirth){
-       try {
-           Unirest.config().socketTimeout(10000).connectTimeout(5000);
-           HttpResponse<String> response = Unirest.get("https://services-uat.msccruises.com/booking/getBookings")
-                   .queryString("lang", "en-US")
-                   .queryString("bookingNum", bookingNum) // Parametro dinamico
-                   .queryString("isLL", "true")
-                   .queryString("firstName", firstName)   // Parametro dinamico
-                   .queryString("lastName", lastName)     // Parametro dinamico
-                   .queryString("dateOfBirth", dateOfBirth)                   .header("Accept", "application/json, text/plain, */*")
-                   .header("Accept-Language", "en")
-                   .header("Cache-Control", "no-cache")
-                   .header("Connection", "keep-alive")
-                   .header("ContentType", "application/json")
-                   .header("Origin", "https://qa4cm-us.msccruises.com")
-                   .header("Pragma", "no-cache")
-                   .header("Referer", "https://qa4cm-us.msccruises.com/")
-                   .header("Sec-Fetch-Dest", "empty")
-                   .header("Sec-Fetch-Mode", "cors")
-                   .header("Sec-Fetch-Site", "same-site")
-                   .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.203")
-                   .header("sec-ch-ua", "\"Not/A)Brand\";v=\"99\", \"Microsoft Edge\";v=\"115\", \"Chromium\";v=\"115\"")
-                   .header("sec-ch-ua-mobile", "?0")
-                   .header("sec-ch-ua-platform", "\"Windows\"")
-                   .asString();
+    public static void getBookingApi() throws Exception {
 
-           return response.getBody();
-       }catch (Exception e ){
-           e.printStackTrace();
-           return "Errore durante la richiesta: " + e.getMessage();
-       }
-   }
+        HttpResponse<String> response = Unirest.post("http://172.16.1.27:8089/mscbee/services/cruise/itineraryDetail")
+                .header("UserId", "WEBB2CESPSC")
+                .header("Password", "fb090046b513c8655b6584c46c593bfca6b511f9ccfb0c6ca513d5bc0fcba35a")
+                .header("AgencyId", "AS900000")
+                .header("Content-Type", "application/xml")
+                .body("<DtsCruiseItineraryDetailRequest xmlns=\"DTS\">\n    <BookingContext>\n        <AgencyId>AS9000000</AgencyId>\n    </BookingContext>\n    <CruiseComponent>\n        <CruiseID>VI20250405FDFSOU</CruiseID>\n        <LanguageCode>ITA</LanguageCode>\n        <OfficeCode>ITA</OfficeCode>\n    </CruiseComponent>\n</DtsCruiseItineraryDetailRequest>")
+                .asString();
+
+        String xmlResponse =response.getBody();
+        formatAndPrintXML(xmlResponse);
+    }
+
+    public static void formatAndPrintXML(String xml) throws Exception {
+        // Crea un parser di documenti XML
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true); // Per supportare i namespace
+
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource inputSource = new InputSource(new StringReader(xml));
+        Document doc = builder.parse(inputSource);
+
+        // Usa Transformer per formattare l'XML
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+
+        // Imposta il formato di output (indentazione)
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+        // Crea il flusso di output per la stampa
+        StringWriter stringWriter = new StringWriter();
+        StreamResult result = new StreamResult(stringWriter);
+
+        // Trasforma e scrivi l'output formattato
+        transformer.transform(new DOMSource(doc), result);
+
+        // Ottieni il risultato formattato
+        String formattedXML = stringWriter.toString();
+
+        // Stampa l'XML formattato
+        System.out.println(formattedXML);
+    }
 }
